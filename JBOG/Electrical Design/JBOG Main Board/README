@@ -1,1 +1,3 @@
-test
+Files related to the JBOG Main Board 
+
+On this board you have the BMC, switch PCIe aswell as the 4 PCIe connectors for the GPUs
