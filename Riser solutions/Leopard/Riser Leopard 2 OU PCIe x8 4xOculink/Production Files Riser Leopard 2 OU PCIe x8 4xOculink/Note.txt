@@ -1,0 +1,3 @@
+Rev A.2
+
+Modify PCA9548ADGVR (out of stock) to PCA9548APW,118 
