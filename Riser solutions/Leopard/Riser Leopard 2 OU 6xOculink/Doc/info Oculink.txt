@@ -1,0 +1,5 @@
+DAS/DSS : LED signal, active low signal, 3.3V
+MFG1 and MFG2 : Manufacturing Data Line and manufacturing Clock Line, optionnal, if not needed leave those pins open
+DEVSLP : Device Sleep for SATA devices to go in low power device sleep mode, if not needed leave this pin open
+SUSCLK : Suspend Clock, 32.768kHz clock supply to enter reduce power consumption modes, if not needed leave this pin open
+CONFIG[0..3] : Module Configuration Pins, pull up to 3.3V on host side

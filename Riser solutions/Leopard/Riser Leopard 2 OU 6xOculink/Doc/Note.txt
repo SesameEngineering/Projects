@@ -1,0 +1,2 @@
+Pins B17 and B48 of the PCIe x24 connector connected to GND to have 8x PCIe lanes divided into 2x4 PCIe lanes 
+and 16x PCIe lanes into 4x4 PCIe lanes
