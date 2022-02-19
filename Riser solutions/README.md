@@ -1,5 +1,10 @@
 # Riser Solutions
 
+Different riser solutions for OCP Leopard and OCP Tioga pass server are available. In those folders you can find different riser designs. For each you will have :
+*Design files : all of the file required to do the design. Design has been made usiong Kicad
+*Production files : files that you need for production, send all of them to your PCB manufacturer for production (it includes PCB, components and assembly)
+*Test report : result of test that has been done to validate the designs
+
 ## Riser solutions for Leopard
 
 ### Riser 2 OU, 6x Oculink connector
