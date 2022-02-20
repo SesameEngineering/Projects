@@ -6,7 +6,7 @@ Leopard doesn’t need to be modified for Nvidia Tesla T4.
 
 For Nvidia Tesla K80 and Nvidia Quadro A40, some components on the Leopard have to be replaced and we need an extra cable to power up the GPU.
 On the _Leopard picture_ you can see the different components to replace
-Check the _components to replace.xlsx_ document to see which component to replace
+Check the [components to replace](https://github.com/SesameEngineering/Projects/blob/master/GPU%20Solutions/Leopard/components%20to%20replace.xlsx) document to see which component to replace
 
 We replace the power connector so that we have 13A per pins. There is only 2 pins with 12V so we can have 2x13Ax12V = 312W coming from this connector. We also replace the fuse for both pins since they are only 6A
 
