@@ -19,23 +19,35 @@ The connector with only 6/8 positions used should be plugged into the Leopard wh
 * Quanta and Wiwynn (ODM and OEM) Tioga Pass : Quanta and Wiwynn Tioga Pass both have an additional footprint for power cable assembly
   * For Quanta, cable assembly reference is: 10136662-3A0009HLF
   * For Wiwynn, cable assembly reference is: 10136662-3A0021HLF
+
 Manufacturer of this cable assembly is Amphenol
-For Wiwynn and Quanta, we will have to insert a connector in the empty footprint. Reference of this connector is 10138108-101LF, from Amphenol. If this connector is already inserted, we can skip this step. You can check where the footprint on the [pressfit footprint](test) image.
-
-
-
-We will have to buy one cable assembly (impossible for the moment to buy only the pressfit connector that we will later use with our cable) and then modify it to add 8pins CPU connector to power up the GPU.
+For Wiwynn and Quanta, we will have to insert a connector in the empty footprint. Reference of this connector is 10138108-101LF, from Amphenol. If this connector is already inserted, we can skip this step. You can check where the footprint on the [pressfit footprint](https://github.com/SesameEngineering/Projects/blob/master/GPU%20Solutions/Tioga%20Pass/footprint%20pressfit.png) image.
+You have to buy one complete cable assembly (impossible for the moment to buy only the pressfit connector that we will later use with our cable) and then modify it to add 8pins CPU connector to power up the GPU.
 Footprint from cable assembly 2159562-1 (manufacturer, TE) is the same as the one for cable assembly from Amphenol. Cable assembly 2159562-1 is used on Mitac Tioga Pass and on Leopard.
-Depending on which cable assembly is easier to get and cheaper, we will use it to build cable ITR-OCP-GPU-450. This cable is suitable for GPU with 8pins CPU power interface. If you need GPU with 6+2 PCIe for power, you need cable extension ITR-GPU-EPP-86262-100. This cable will then have to be send to your local manufacturer aswell as the Tioga Pass for the pressfit connector to be connected to the board.
-
-
+Depending on which cable assembly is easier to get and cheaper, you have to use it to build the. This cable is suitable for GPU with 8pins CPU power interface. This cable will then have to be send to your local manufacturer aswell as the Tioga Pass for the pressfit connector to be connected to the board.
 
 ### Fan Speed
 
-T4, K80 and A40 go too high in temperature so we need to adapt fan speed when we use GPU with Leopard server. To set up fan speed to 80% (0x50) run the following command :  
+T4, K80 and A40 go too high in temperature so we need to adapt fan speed when we use GPU with Tioga Pass server. To set up fan speed to 80% (0x50) run the following command : 
+* On Mitac OEM Tioga Pass:
 ```
-  ipmitool -I lanplus -U USERID -P PASSW0RD -H IpBMCServer raw 0x30 0x27 0x00 0x50
-  ipmitool -I lanplus -U USERID -P PASSW0RD -H IpBMCServer raw 0x30 0x27 0x01 0x50
+ipmitool -I lanplus -U USERID -P PASSW0RD -H IpBMCServer raw 0x30 0x70 0x00 0x46
+ipmitool -I lanplus -U USERID -P PASSW0RD -H IpBMCServer raw 0x30 0x70 0x01 0x46
+```
+* On Wiwynn OEM Tioga Pass:
+```
+# set both FAN0 and FAN1 to 70%
+ipmitool -I lanplus -U USERID -P PASSW0RD -H IpBMCServer raw 0x3e 0x02 0xa1 0x46 0x46
+```
+And, if you ever want it back to auto adjusting the fan speed:
+```
+# enable FSC auto mode
+ipmitool -I lanplus -U USERID -P PASSW0RD -H IpBMCServer raw 0x3e 0x02 0xa2 0x01
+```
+* On Wiwynn ODM Tioga Pass:
+```
+sv stop fscd
+fan-util --set 100 //for fan speed at 100%
 ```
 
 Check fan speed :
@@ -44,6 +56,108 @@ ipmitool -I lanplus -U USERID -P PASSW0RD -H IpBMCServer sensor list all |grep F
 SYS FAN0         | 6900.000   | RPM        | ok    | na        | 500.000   | na        | na        | 9000.000  | na
 SYS FAN1         | 6900.000   | RPM        | ok    | na        | 500.000   | na        | na        | 9000.000  | na
 ```
+or if you use OpenBMC :
+```
+fan-util --get
+```
+
+### BIOS Adjustments required
+
+Using Tioga Pass initial settings, you might face Post code error D4 : Error Codes PCI resource allocation error. Out of Resources or you might see this on the console:
+```
+       Aptio Setup Utility - Copyright (C) 2019 American Megatrends, Inc.
+    Main  Advanced  Platform Configuration  Socket Configuration  Server Mgmt  >
+/----------------------------------------------------+-------------------------\
+|  PCI OUT OF RESOURCES CONDITION:                  ^|                         |
+|                                                   *|                         |
+|  ERROR: Insufficient PCI Resources Detected!!!    *|                         |
+|                                                   *|                         |
+|  System is running with Insufficient PCI          *|                         |
+|  Resources!                                       *|                         |
+|  In order to display this message some            *|                         |
+|  PCI devices were set to disabled state!          *|                         |
+|  It is strongly recommended to Power Off the      *|                         |
+|  system                                           *|-------------------------|
+|  and remove some PCI/PCI Express cards from the   *|><: Select Screen        |
+|  system!                                          *|^v: Select Item          |
+|  To continue booting, proceed to <Save & Exit>    *|Enter: Select            |
+|  Menu Option                                      *|+/-: Change Opt.         |
+|  and select Boot Device or <Discard Changes and   *|F1: General Help         |
+|  Exit>.                                           +|F8: Previous Values      |
+|                                                   +|F9: Optimized Defaults   |
+|                                                   v|F10: Save & Reset        |
+|                                                    |ESC: Exit                |
+\----------------------------------------------------+-------------------------/
+        Version 2.20.1276. Copyright (C) 2019 American Megatrends, Inc.
+```
+This is usually a problem with the memory allocation.
+To change memory allocation on Tioga Pass :
+* Connect to the BIOS
+   * Under Socket Configuration select menu Common RefCode Configuration option
+ ```
+        Aptio Setup Utility - Copyright (C) 2019 American Megatrends, Inc.
+    Main  Advanced  Platform Configuration  Socket Configuration  Server Mgmt  >
+/----------------------------------------------------+-------------------------\
+|> Processor Configuration                           |Displays and provides    |
+|> Common RefCode Configuration                      |option to change the     |
+|> UPI Configuration                                 |Common RefCode Settings  |
+|> Memory Configuration                              |                         |
+|> IIO Configuration                                 |                         |
+|> Advanced Power Management Configuration           |                         |
+|                                                    |                         |
+|                                                    |                         |
+|                                                    |                         |
+|                                                    |-------------------------|
+|                                                    |><: Select Screen        |
+|                                                    |^v: Select Item          |
+|                                                    |Enter: Select            |
+|                                                    |+/-: Change Opt.         |
+|                                                    |F1: General Help         |
+|                                                    |F8: Previous Values      |
+|                                                    |F9: Optimized Defaults   |
+|                                                    |F10: Save & Reset        |
+|                                                    |ESC: Exit                |
+\----------------------------------------------------+-------------------------/
+        Version 2.20.1276. Copyright (C) 2019 American Megatrends, Inc.
+```
+   * Change MMIO High Granularity Size from 1G to 64G
+   ```
+   Aptio Setup Utility - Copyright (C) 2019 American Megatrends, Inc.
+                                            Socket Configuration
+/----------------------------------------------------+-------------------------\
+|  Common RefCode Configuration                      |Selects the allocation  ^|
+|  -----------------------------------------------   |size used to assign     *|
+|  ---                                               |mmioh resources.        *|
+|  MMCFG Base               [2G]                     |Total mmioh space can   *|
+|  MMCFG Size               [256M]                   |be up to 32xgranularity.*|
+|  MMIO High Base    /---- MMIO High Granularity Size ---\stack mmioh         +|
+|  MMIO High Granular| 1G                                |  ce assignments    +|
+|  Size              | 4G                                |  ltiples of the    v|
+|  Isoc Mode         | 16G                               |                     |
+|  Numa              | 64G                               |  -------------------|
+|                    | 256G                              |  lect Screen        |
+|                    | 1024G                             |  lect Item          |
+|                    \-----------------------------------/   Select            |
+|                                                           hange Opt.         |
+|                                                    |F1: General Help         |
+|                                                    |F8: Previous Values      |
+|                                                    |F9: Optimized Defaults   |
+|                                                    |F10: Save & Reset        |
+|                                                    |ESC: Exit                |
+\----------------------------------------------------+-------------------------/
+        Version 2.20.1276. Copyright (C) 2019 American Megatrends, Inc.
+```
+You should then be able to boot without the D4 error during post code
+
+### Mitac Tioga Pass, update BIOS
+
+Mitac Tioga Pass BIOS has to be updated to modify MMIO High Granularity Size setting
+
+You can find updated BIOS here: [updated BIOS](https://www.dropbox.com/s/r6vn804kgfq4j6w/C439_TiogaPass_V2010003_Redfish.zip?dl=0) 
+
+ To update BIOS, refer to page 402-403 of the [Tioga Pass Manual](https://download.mitacmct.com/Files/manual/OCP/E7278%20Tioga%20Pass%20User%20Manual.pdf)
+
+After BIOS is updated, you should be able to modify MMIO High Granularity Size to 64G in the Advanced tab as describe previously
 
 Once server boot and you are logged into your session
 
