@@ -16,7 +16,18 @@ We replace the power connector so that we have 13A per pins. There is only 2 pin
 For the power cable, both K80 and A40 have a 8pins CPU connector so you need a special cable. Check _GPU cable.pdf_ for the drawing of the cable you need
 The connector with only 6/8 positions used should be plugged into the Leopard while the connector with 8/8 positions is for the GPU side. Plug the white connector with 6/8 positions into the Tioga Pass (connector on the Tioga Pass is white) and black connector on the GPU (connector on GPU usually black)
 
-* Quanta and Wiwynn (ODM and OEM) Tioga Pass :
+* Quanta and Wiwynn (ODM and OEM) Tioga Pass : Quanta and Wiwynn Tioga Pass both have an additional footprint for power cable assembly
+  * For Quanta, cable assembly reference is: 10136662-3A0009HLF
+  * For Wiwynn, cable assembly reference is: 10136662-3A0021HLF
+Manufacturer of this cable assembly is Amphenol
+For Wiwynn and Quanta, we will have to insert a connector in the empty footprint. Reference of this connector is 10138108-101LF, from Amphenol. If this connector is already inserted, we can skip this step. You can check where the footprint on the [pressfit footprint](test) image.
+
+
+
+We will have to buy one cable assembly (impossible for the moment to buy only the pressfit connector that we will later use with our cable) and then modify it to add 8pins CPU connector to power up the GPU.
+Footprint from cable assembly 2159562-1 (manufacturer, TE) is the same as the one for cable assembly from Amphenol. Cable assembly 2159562-1 is used on Mitac Tioga Pass and on Leopard.
+Depending on which cable assembly is easier to get and cheaper, we will use it to build cable ITR-OCP-GPU-450. This cable is suitable for GPU with 8pins CPU power interface. If you need GPU with 6+2 PCIe for power, you need cable extension ITR-GPU-EPP-86262-100. This cable will then have to be send to your local manufacturer aswell as the Tioga Pass for the pressfit connector to be connected to the board.
+
 
 
 ### Fan Speed
