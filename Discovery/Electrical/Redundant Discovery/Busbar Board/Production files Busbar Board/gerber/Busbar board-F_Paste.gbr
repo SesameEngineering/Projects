@@ -1,0 +1,23 @@
+G04 #@! TF.GenerationSoftware,KiCad,Pcbnew,(5.1.6)-1*
+G04 #@! TF.CreationDate,2021-03-03T14:17:41+01:00*
+G04 #@! TF.ProjectId,Busbar board,42757362-6172-4206-926f-6172642e6b69,rev?*
+G04 #@! TF.SameCoordinates,PX4c4b360PY85843d4*
+G04 #@! TF.FileFunction,Paste,Top*
+G04 #@! TF.FilePolarity,Positive*
+%FSLAX46Y46*%
+G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
+G04 Created by KiCad (PCBNEW (5.1.6)-1) date 2021-03-03 14:17:41*
+%MOMM*%
+%LPD*%
+G01*
+G04 APERTURE LIST*
+%ADD10R,90.000000X30.000000*%
+%ADD11R,1.270000X2.540000*%
+G04 APERTURE END LIST*
+D10*
+X89160760Y68828060D03*
+X89160760Y21328060D03*
+D11*
+X4247960Y71913040D03*
+X7247960Y71913040D03*
+M02*
