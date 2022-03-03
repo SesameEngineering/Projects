@@ -1,1 +1,1 @@
-Contains CAD files nad drawings for blank panels ORV2
+Contains CAD files and drawings for blank panels ORV2
